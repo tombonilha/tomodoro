@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const pomodoroTimeInput = document.getElementById("pomodoroTimeInput");
     const shortBreakTimeInput = document.getElementById("shortBreakTimeInput");
     const longBreakTimeInput = document.getElementById("longBreakTimeInput");
+    const applySettingsBtn = document.getElementById("applySettingsBtn");
     const resetSettingsBtn = document.getElementById("resetSettingsBtn");
     const videoFrameContainer = document.getElementById("videoFrameContainer");
     const youtubeIframe = document.getElementById("youtubeIframe");
@@ -786,6 +787,31 @@ document.addEventListener("DOMContentLoaded", () => {
             loadSettings(); // Reload and re-apply everything except total count and tasks
             closeModal(settingsModal, settingsOverlay);
         }
+    });
+
+    applySettingsBtn.addEventListener("click", () => {
+        // Atualiza as variáveis com base nos inputs
+        customTimes.pomodoro = Math.max(1, parseInt(pomodoroTimeInput.value)) * 60;
+        customTimes.shortBreak = Math.max(1, parseInt(shortBreakTimeInput.value)) * 60;
+        customTimes.longBreak = Math.max(1, parseInt(longBreakTimeInput.value)) * 60;
+
+        currentTheme = themeDarkRadio.checked ? "dark" : "light";
+        currentBgColor = bgColorPicker.value;
+        currentBtnColor = btnColorPicker.value;
+        isAutoMode = cycleModeAutoRadio.checked;
+        requireCycleConfirmation = cycleNotificationConfirm.checked;
+        currentYoutubeLink = youtubeLinkInput.value.trim();
+
+        saveCustomTimes();
+        saveTheme();
+        saveBgColor();
+        saveBtnColor();
+        saveAutoMode();
+        saveRequireCycleConfirmation();
+        saveYoutubeLink();
+
+        applySettingsToDOM();
+        closeModal(settingsModal, settingsOverlay);
     });
 
     // --- Initial Load ---
