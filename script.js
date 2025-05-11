@@ -429,10 +429,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     [modePomodoroBtn, modeShortBreakBtn, modeLongBreakBtn].forEach(btn => {
         btn.addEventListener("click", () => {
-            const newMode = btn.id.replace("mode", "").replace("Btn", "").toLowerCase();
+            let newMode = btn.id.replace("mode", "").replace("Btn", "").toLowerCase();
             if (newMode === "shortbreak") newMode = "shortBreak";
             if (newMode === "longbreak") newMode = "longBreak";
-            setMode(newMode);
+            if (currentMode !== newMode) {
+                setMode(newMode);
+            }
         });
     });
 
