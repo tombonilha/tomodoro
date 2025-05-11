@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomodoro Focus (HTML Version)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app dark">
+        <!-- Settings Modal -->
+        <div id="settingsOverlay" class="settings-overlay"></div>
+        <div class="settings-modal" id="settingsModal">
+            <button id="closeSettingsModalBtn" class="close-modal-btn" aria-label="Fechar Configurações">&times;</button>
+            <h2>🎨 Configurações</h2>
+            
+            <fieldset class="settings-group">
+                <legend>Aparência</legend>
+                <div class="settings-row">
+                    <div class="settings-item">
+                        <label for="bgColorPicker">Cor do Fundo:</label>
+                        <input type="color" id="bgColorPicker" value="#1e1e1e">
+                    </div>
+                    <div class="settings-item">
+                        <label for="btnColorPicker">Cor dos Botões:</label>
+                        <input type="color" id="btnColorPicker" value="#f04e4e">
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <label for="bgImageUpload">Imagem de Fundo (Upload):</label>
+                    <input type="file" id="bgImageUpload" accept="image/*">
+                </div>
+                <div>
+                    <label>Tema:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="theme" value="dark" id="themeDarkRadio" checked> Escuro</label>
+                        <label><input type="radio" name="theme" value="light" id="themeLightRadio"> Claro</label>
+                    </div>
+                </div>
+            </fieldset>
+            
+            <fieldset class="settings-group">
+                <legend>⏱️ Personalizar Tempos (minutos)</legend>
+                <div class="settings-row timer-settings-row">
+                    <div class="settings-item">
+                        <label for="pomodoroTimeInput">Foco:</label>
+                        <input type="number" id="pomodoroTimeInput" min="1" value="25">
+                    </div>
+                    <div class="settings-item">
+                        <label for="shortBreakTimeInput">Pausa Curta:</label>
+                        <input type="number" id="shortBreakTimeInput" min="1" value="5">
+                    </div>
+                    <div class="settings-item">
+                        <label for="longBreakTimeInput">Pausa Longa:</label>
+                        <input type="number" id="longBreakTimeInput" min="1" value="15">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="settings-group">
+                <legend>Preferências de Ciclo</legend>
+                <div class="settings-item">
+                    <label>Modo de Ciclo:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="cycleMode" value="manual" id="cycleModeManualRadio" checked> Manual</label>
+                        <label><input type="radio" name="cycleMode" value="auto" id="cycleModeAutoRadio"> Contínuo</label>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <label><input type="checkbox" id="cycleNotificationConfirm" checked> Exigir confirmação para próximo ciclo</label>
+                </div>
+            </fieldset>
+
+            <div class="settings-group">
+                <label for="youtubeLinkInput">Link do YouTube (para fundo):</label>
+                <input type="text" id="youtubeLinkInput" placeholder="Cole o link do YouTube aqui">
+            </div>
+            
+            <button id="resetSettingsBtn" class="danger-btn">Resetar Configurações</button>
+        </div>
+
+        <!-- Pomodoro Info Modal -->
+        <div id="pomodoroInfoOverlay" class="info-overlay"></div>
+        <div class="info-modal" id="pomodoroInfoModal">
+            <button id="closePomodoroInfoModalBtn" class="close-modal-btn" aria-label="Fechar Informações">&times;</button>
+            <h2>🍅 O que é a Técnica Pomodoro?</h2>
+            <p>A Técnica Pomodoro é um método de gerenciamento de tempo...</p> <!-- Conteúdo abreviado -->
+            <p>Você deseja ser notificado ao final de cada ciclo e confirmar para iniciar o próximo?</p>
+            <div class="modal-actions">
+                <button id="confirmPomodoroInfoBtn" class="primary-btn">Entendi, iniciar!</button>
+                <button id="askLaterPomodoroInfoBtn">Perguntar depois</button>
+            </div>
+        </div>
+
+        <!-- Cycle Confirmation Modal -->
+        <div id="cycleConfirmOverlay" class="confirm-overlay"></div>
+        <div class="confirm-modal" id="cycleConfirmModal">
+            <h2 id="cycleConfirmTitle">Ciclo Concluído!</h2>
+            <p id="cycleConfirmMessage">O tempo de [Modo Atual] terminou. Pronto para o próximo?</p>
+            <div class="modal-actions">
+                <button id="startNextCycleBtn" class="primary-btn">Iniciar Próximo Ciclo</button>
+                <button id="dismissCycleBtn">Dispensar</button>
+            </div>
+        </div>
+
+        <header>
+            <h1>Tomodoro Focus</h1>
+            <div>
+                <button id="toggleSettingsBtn" aria-label="Abrir Configurações">⚙️</button>
+            </div>
+        </header>
+
+        <main class="central">
+            <div class="timer-section">
+                <div class="mode-buttons">
+                    <button id="modePomodoroBtn" class="active" aria-pressed="true">Pomodoro</button>
+                    <button id="modeShortBreakBtn" aria-pressed="false">Pausa Curta</button>
+                    <button id="modeLongBreakBtn" aria-pressed="false">Pausa Longa</button>
+                </div>
+                <div class="time-display" id="timeDisplay" aria-live="polite">25:00</div>
+                <div class="cycle-display" id="cycleDisplay" aria-live="polite">Foco: 1/4 (Total: 0)</div>
+                <div class="controls">
+                    <button id="startTimerBtn">Iniciar</button>
+                    <button id="resetTimerBtn">Resetar</button>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <h2><label for="newTaskInput">Tarefas</label></h2>
+                <div class="task-input">
+                    <input type="text" id="newTaskInput" placeholder="Nova tarefa principal...">
+                    <select id="taskPrioritySelect" aria-label="Prioridade da Tarefa">
+                        <option value="low">Baixa</option>
+                        <option value="medium" selected>Média</option>
+                        <option value="high">Alta</option>
+                    </select>
+                    <button id="addTaskBtn">Adicionar Tarefa</button>
+                </div>
+                <ul id="taskList"></ul>
+            </div>
+            
+            <div class="video-frame" id="videoFrameContainer" style="display: none;">
+                <iframe id="youtubeIframe" width="560" height="315" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
